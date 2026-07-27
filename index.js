@@ -1,10 +1,18 @@
+const dns = require("node:dns");
+dns.setServers(["8.8.8.8", "8.8.4.4"]);
+
+
 const express = require('express')
 const dotenv = require('dotenv')
+const cors = require('cors')
 dotenv.config()
 const {MongoClient, ServerApiVersion} = require('mongodb')
 const uri = process.env.MONGODB_URI
 const app = express()
 const PORT = process.env.PORT
+
+app.use(cors())
+app.use(express.json())
 
 
 const client = new MongoClient(uri, {
@@ -18,6 +26,23 @@ const client = new MongoClient(uri, {
 async function run(){
     try{
         await client.connect();
+
+        const db = client.db("ideavault");
+        const ideaCollection = db.collection("ideas");
+
+
+        app.post('/idea',async(req,res)=>{
+            const ideaData = req.body
+            console.log(ideaData)
+            const result = await ideaCollection.insertOne(ideaData)
+
+            res.json(result)
+        })
+
+
+
+
+
         await client.db("admin").command({ping : 1});
         console.log('Pinged your deployment. You successfully connected to MongoDB');
     }finally{
