@@ -6,7 +6,7 @@ const express = require('express')
 const dotenv = require('dotenv')
 const cors = require('cors')
 dotenv.config()
-const {MongoClient, ServerApiVersion} = require('mongodb')
+const {MongoClient, ServerApiVersion, ObjectId} = require('mongodb')
 const uri = process.env.MONGODB_URI
 const app = express()
 const PORT = process.env.PORT
@@ -34,12 +34,30 @@ async function run(){
             const result = await ideaCollection.find().toArray();
             res.json(result)
         })
+        
 
         app.post('/idea',async(req,res)=>{
             const ideaData = req.body
             console.log(ideaData)
             const result = await ideaCollection.insertOne(ideaData)
 
+            res.json(result)
+        })
+
+        app.get('/idea/:id',async(req,res)=>{
+            const {id} = req.params;
+            const result = await ideaCollection.findOne({_id: new ObjectId(id)});
+            res.json(result)
+        })
+
+        app.patch('/idea/:id',async(req,res)=>{
+            const {id} =  req.params
+            const updatedData = req.body
+
+            const result = await ideaCollection.updateOne(
+                {_id: new ObjectId(id)},
+                {$set: updatedData}
+            )
             res.json(result)
         })
 
