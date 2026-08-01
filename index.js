@@ -31,6 +31,11 @@ async function run(){
         const ideaCollection = db.collection("ideas");
         const commentsCollection = db.collection("comments");
 
+        app.get('/trending',async(req,res)=>{
+            const result = await ideaCollection.find().limit(6).toArray();
+            res.json(result)
+        })
+
         app.post('/comment',async(req,res)=>{
             const commentData = req.body
             const result = await commentsCollection.insertOne(commentData)
