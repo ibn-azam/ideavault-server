@@ -57,31 +57,31 @@ async function run() {
       res.json(result);
     });
 
-    app.post("/comment", async (req, res) => {
+    app.post("/comment",verifyToken, async (req, res) => {
       const commentData = req.body;
       const result = await commentsCollection.insertOne(commentData);
       res.json(result);
     });
 
-    app.get("/comment", async (req, res) => {
+    app.get("/comment",verifyToken, async (req, res) => {
       const result = await commentsCollection.find().toArray();
       res.json(result);
     });
-    app.get("/comment/:userId", async (req, res) => {
+    app.get("/comment/:userId",verifyToken, async (req, res) => {
       const { userId } = req.params;
       const result = await commentsCollection
         .find({ userId: userId })
         .toArray();
       res.json(result);
     });
-    app.delete("/comment/:id", async (req, res) => {
+    app.delete("/comment/:id",verifyToken, async (req, res) => {
       const { id } = req.params;
       const result = await commentsCollection.deleteOne({
         _id: new ObjectId(id),
       });
       res.json(result);
     });
-    app.patch("/comment/:id", async (req, res) => {
+    app.patch("/comment/:id",verifyToken, async (req, res) => {
       const { id } = req.params;
       const commentUpdate = req.body;
 
@@ -92,7 +92,7 @@ async function run() {
       res.json(result);
     });
 
-    app.get("/idea", async (req, res) => {
+    app.get("/idea",verifyToken, async (req, res) => {
       const { search = "", category = "" } = req.query;
 
       const query = {};
@@ -113,7 +113,7 @@ async function run() {
       res.send(ideas);
     });
 
-    app.get("/my-ideas/:userId", async (req, res) => {
+    app.get("/my-ideas/:userId",verifyToken, async (req, res) => {
       const { userId } = req.params;
 
       const result = await ideaCollection.find({ userId }).toArray();
@@ -121,7 +121,7 @@ async function run() {
       res.send(result);
     });
 
-    app.post("/idea", async (req, res) => {
+    app.post("/idea",verifyToken, async (req, res) => {
       const ideaData = req.body;
       const result = await ideaCollection.insertOne(ideaData);
       res.json(result);
@@ -133,7 +133,7 @@ async function run() {
       res.json(result);
     });
 
-    app.patch("/idea/:id", async (req, res) => {
+    app.patch("/idea/:id",verifyToken, async (req, res) => {
       const { id } = req.params;
       const updatedData = req.body;
 
@@ -144,7 +144,7 @@ async function run() {
       res.json(result);
     });
 
-    app.delete("/idea/:id", async (req, res) => {
+    app.delete("/idea/:id",verifyToken, async (req, res) => {
       const { id } = req.params;
       const result = await ideaCollection.deleteOne({ _id: new ObjectId(id) });
       res.json(result);
